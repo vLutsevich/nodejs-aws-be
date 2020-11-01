@@ -20,6 +20,9 @@ service: product-service
 # Check out our docs for more details
 frameworkVersion: '2'
 
+plugins:
+  - serverless-plugin-webpack
+
 provider:
   name: aws
   runtime: nodejs12.x
