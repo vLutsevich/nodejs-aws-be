@@ -9,9 +9,7 @@ export const getProductList: APIGatewayProxyHandler = async () => {
     return {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
-        "Access-Control-Allow-Methods": "OPTIONS,GET",
-        "Access-Control-Allow-Origin": "https://d3bq2tyrxffjd4.cloudfront.net",
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify(productList)
     }

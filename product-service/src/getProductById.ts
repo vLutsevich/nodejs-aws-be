@@ -9,12 +9,17 @@ export const getProductById: APIGatewayProxyHandler = async (event) => {
     const { productId } = event.pathParameters;
     const productIndex = productList.findIndex(x => x.id === productId);
 
+    if (productIndex === -1) {
+      return ({
+        statusCode: 404,
+        body: JSON.stringify({ error: 'Product Not Found'})
+      });
+    }
+
     return {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
-        "Access-Control-Allow-Methods": "OPTIONS,GET",
-        "Access-Control-Allow-Origin": "https://d3bq2tyrxffjd4.cloudfront.net",
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify(productList[productIndex])
     };
