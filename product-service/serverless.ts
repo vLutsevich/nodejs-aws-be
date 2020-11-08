@@ -14,8 +14,10 @@ const serverlessConfiguration: Serverless = {
       includeModules: true
     }
   },
-  // Add the serverless-webpack plugin
-  plugins: ['serverless-webpack'],
+  plugins: [
+    'serverless-webpack',
+    'serverless-dotenv-plugin'
+  ],
   provider: {
     name: 'aws',
     runtime: 'nodejs12.x',
@@ -30,7 +32,7 @@ const serverlessConfiguration: Serverless = {
   },
   functions: {
     getProductList: {
-      handler: 'handler.getProductList',
+      handler: 'getProductList.invoke',
       events: [
         {
           http: {
@@ -42,7 +44,7 @@ const serverlessConfiguration: Serverless = {
       ]
     },
     getProductById: {
-      handler: 'handler.getProductById',
+      handler: 'getProductById.invoke',
       events: [
         {
           http: {
