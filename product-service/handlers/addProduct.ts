@@ -2,12 +2,24 @@ import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
 import { Client } from "pg";
 import { dbOptions } from '../utils/dbOptions';
+import { Product, validateProduct } from '../models/productShema';
 
 export const invoke: APIGatewayProxyHandler = async event => {
   console.log('addProduct body: ', event.body);
   let client;
   try {
-    const { title, description, price, count } = JSON.parse(event.body);
+    const product: Product = JSON.parse(event.body);
+    const validation = validateProduct(product);
+
+    if (validation) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify(validation.errors)
+      }
+    }
+
+    const { title, description, price, count } = product;
+
     client = new Client(dbOptions);
     await client.connect();
 
