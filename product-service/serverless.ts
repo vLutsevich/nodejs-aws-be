@@ -32,7 +32,7 @@ const serverlessConfiguration: Serverless = {
   },
   functions: {
     getProductList: {
-      handler: 'getProductList.invoke',
+      handler: 'handlers/getProductList.invoke',
       events: [
         {
           http: {
@@ -44,7 +44,7 @@ const serverlessConfiguration: Serverless = {
       ]
     },
     getProductById: {
-      handler: 'getProductById.invoke',
+      handler: 'handlers/getProductById.invoke',
       events: [
         {
           http: {
@@ -63,7 +63,7 @@ const serverlessConfiguration: Serverless = {
       ]
     },
     addProduct: {
-      handler: "addProduct.invoke",
+      handler: "handlers/addProduct.invoke",
       events: [
         {
           http: {

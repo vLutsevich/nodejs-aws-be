@@ -1,7 +1,7 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
 import { Client } from "pg";
-import { dbOptions } from './src/dbOptions';
+import { dbOptions } from '../utils/dbOptions';
 
 export const invoke: APIGatewayProxyHandler = async event => {
   console.log('getProductList pathParameters: ', event.pathParameters);
