@@ -4,6 +4,7 @@ import { Client } from "pg";
 import { dbOptions } from './src/dbOptions';
 
 export const invoke: APIGatewayProxyHandler = async event => {
+  console.log('getProductById pathParameters: ', event.pathParameters);
   const { productId } = event.pathParameters;
   let client;
   try {

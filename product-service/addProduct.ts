@@ -4,6 +4,7 @@ import { Client } from "pg";
 import { dbOptions } from './src/dbOptions';
 
 export const invoke: APIGatewayProxyHandler = async event => {
+  console.log('addProduct body: ', event.body);
   let client;
   try {
     const { title, description, price, count } = JSON.parse(event.body);
