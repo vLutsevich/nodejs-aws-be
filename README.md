@@ -12,10 +12,13 @@
 
 ## deploy some function ##
 `sls deploy function --function getProductList`
+
 `sls deploy function -f getProductById`
 
 ## invoke some function locally ##
 `sls invoke local -f postProducts -p lib/data.json`
+
+`serverless invoke local -f importProductsFile --data '{\"queryStringParameters\":{\"name\":\"test.csv\"}}'`
 
 ## invoke deployed function ##
 `sls invoke -f hello`

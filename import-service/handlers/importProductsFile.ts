@@ -1,7 +1,7 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
 import { S3 } from 'aws-sdk';
-import { BUCKET_NAME, REGION } from '../config';
+import { BUCKET_NAME, REGION, UPLOAD_FOLDER_NAME } from '../config';
 
 export const invoke: APIGatewayProxyHandler = async (event, _context) => {
   const fileName = event.queryStringParameters?.name;
@@ -18,7 +18,7 @@ export const invoke: APIGatewayProxyHandler = async (event, _context) => {
 
   const params = {
     Bucket: BUCKET_NAME,
-    Key: `uploaded/${fileName}`,
+    Key: `${UPLOAD_FOLDER_NAME}/${fileName}`,
     Expires: 60,
     ContentType: 'text/csv',
   };

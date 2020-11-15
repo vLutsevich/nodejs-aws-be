@@ -1,5 +1,5 @@
 import type { Serverless } from 'serverless/aws';
-import { BUCKET_NAME, REGION } from './config';
+import { BUCKET_NAME, REGION, UPLOAD_FOLDER_NAME } from './config';
 
 const serverlessConfiguration: Serverless = {
   service: {
@@ -60,6 +60,21 @@ const serverlessConfiguration: Serverless = {
                 }
               }
             }
+          }
+        }
+      ]
+    },
+    importFileParser: {
+      handler: 'handlers/importFileParser.invoke',
+      events: [
+        {
+          s3: {
+            bucket: BUCKET_NAME,
+            event: 's3:ObjectCreated:*',
+            rules: [
+              { prefix: `${UPLOAD_FOLDER_NAME}/`, suffix: '' }
+            ],
+            existing: true
           }
         }
       ]
