@@ -2,7 +2,9 @@
 
 ## create a service ##
 `serverless create --template aws-nodejs --path myService`
+
 `sls create -t aws-nodejs-typescript -p myService`
+
 `sls create -t aws-nodejs-ecma-script -p myService`
 
 ## deploy ##
