@@ -22,3 +22,6 @@
 
 ## invoke deployed function ##
 `sls invoke -f hello`
+
+## ts-jest init ##
+`npx ts-jest config:init`

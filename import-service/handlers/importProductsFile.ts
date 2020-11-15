@@ -33,7 +33,7 @@ export const invoke: APIGatewayProxyHandler = async (event, _context) => {
       body: JSON.stringify(url)
     }
   } catch (err) {
-    console.error("Error while creating signed url: ", err);
+    console.log("Error while creating signed url: ", err);
     return {
       statusCode: 500,
       body: JSON.stringify({
