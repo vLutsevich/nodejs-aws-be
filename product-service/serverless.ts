@@ -28,6 +28,9 @@ const serverlessConfiguration: Serverless = {
       SQS_URL: {
         Ref: "SQSQueue",
       },
+      SNS_ARN: {
+        Ref: "SNSTopic"
+      }
     },
     iamRoleStatements: [
       {
@@ -35,6 +38,13 @@ const serverlessConfiguration: Serverless = {
         Action: "sqs:*",
         Resource: {
           "Fn::GetAtt": ["SQSQueue", "Arn"],
+        },
+      },
+      {
+        Effect: "Allow",
+        Action: "sns:*",
+        Resource: {
+          Ref: "SNSTopic",
         },
       },
     ],
@@ -45,6 +55,22 @@ const serverlessConfiguration: Serverless = {
         Type: "AWS::SQS::Queue",
         Properties: {
           QueueName: "lesson6-hw-queue",
+        },
+      },
+      SNSTopic: {
+        Type: "AWS::SNS::Topic",
+        Properties: {
+          TopicName: "lesson6-hw-topic2",
+        },
+      },
+      SNSSubscription: {
+        Type: "AWS::SNS::Subscription",
+        Properties: {
+          Endpoint: "cars-shop-aws@mailforspam.com",
+          Protocol: "email",
+          TopicArn: {
+            Ref: "SNSTopic",
+          },
         },
       },
     },

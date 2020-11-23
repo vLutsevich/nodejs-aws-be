@@ -2,7 +2,8 @@ import { SQSEvent, SQSHandler } from 'aws-lambda';
 import 'source-map-support/register';
 import { Client, QueryResult } from "pg";
 import { dbOptions } from '../utils/dbOptions';
-import { Product } from '../models/productShema';
+import { Product, validateProduct } from '../models/productShema';
+import { SNS } from "aws-sdk";
 
 async function addProductToDB(client: Client, product: Product) {
   try {
@@ -26,9 +27,36 @@ async function addProductToDB(client: Client, product: Product) {
   }
 }
 
+async function emailNotify(products: Product[]) {
+  const sns = new SNS({ region: 'eu-west-1'});
+
+  const text = `${products.length} products were successfully inserted into DB:`;
+
+  return new Promise((resolve) => {
+    sns.publish(
+      {
+        Subject: "New Products",
+        Message: text + '\r\n' + products.map(product => JSON.stringify(product)).join('\r\n'),
+        TopicArn: process.env.SNS_ARN,
+      },
+      () => {
+        console.log("Send email for created products");
+        resolve();
+      }
+    );
+  });
+}
+
 export const invoke: SQSHandler = async (event: SQSEvent) => {
-  const client = new Client(dbOptions);
-  await client.connect();
+  let client: Client;
+  const products: Product[] = [];
+  try {
+    client = new Client(dbOptions);
+    await client.connect();
+  } catch (err) {
+    console.error("DB Connection error", err);
+    return;
+  }
 
   for (let { body } of event.Records) {
     try {
@@ -39,14 +67,20 @@ export const invoke: SQSHandler = async (event: SQSEvent) => {
         price: price ? Number(price) : 0,
         count: count ? Number(count) : 0,
       };
-      console.log({ product });
+
+      if (validateProduct(product)) {
+        throw "Validation Error";
+      }
 
       await addProductToDB(client, product);
+      products.push(product);
     } catch (err) {
-      console.error(`Error while parsing product: ${body}`, err);
+      console.error(`Error parse product: ${body}`, err);
     }
   }
 
   // not use finally, because it closes client before other messages from queue received
   await client.end;
+
+  await emailNotify(products);
 }
