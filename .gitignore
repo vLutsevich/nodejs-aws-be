@@ -10,3 +10,9 @@ jspm_packages
 
 # IDE directories
 .vscode
+
+/*
+# except
+!/import-service
+!/product-service
+!*.csv
