@@ -3,9 +3,6 @@ import type { Serverless } from 'serverless/aws';
 const serverlessConfiguration: Serverless = {
   service: {
     name: 'product-service',
-    // app and org for use with dashboard.serverless.com
-    // app: your-app-name,
-    // org: your-org-name,
   },
   frameworkVersion: '2',
   custom: {
@@ -28,6 +25,40 @@ const serverlessConfiguration: Serverless = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      SQS_URL: {
+        Ref: "SQSQueue",
+      },
+    },
+    iamRoleStatements: [
+      {
+        Effect: "Allow",
+        Action: "sqs:*",
+        Resource: {
+          "Fn::GetAtt": ["SQSQueue", "Arn"],
+        },
+      },
+    ],
+  },
+  resources: {
+    Resources: {
+      SQSQueue: {
+        Type: "AWS::SQS::Queue",
+        Properties: {
+          QueueName: "lesson6-hw-queue",
+        },
+      },
+    },
+    Outputs: {
+      SQSQueueUrl: {
+        Value: {
+          Ref: "SQSQueue",
+        }
+      },
+      SQSQueueArn: {
+        Value: {
+          "Fn::GetAtt": ["SQSQueue", "Arn"],
+        }
+      },
     },
   },
   functions: {
@@ -74,7 +105,20 @@ const serverlessConfiguration: Serverless = {
         },
       ],
     },
-  }
+    catalogBatchProcess: {
+      handler: "handlers/catalogBatchProcess.invoke",
+      events: [
+        {
+          sqs: {
+            batchSize: 5,
+            arn: {
+              "Fn::GetAtt": ["SQSQueue", "Arn"],
+            },
+          },
+        },
+      ]
+    }
+  },
 }
 
 module.exports = serverlessConfiguration;
