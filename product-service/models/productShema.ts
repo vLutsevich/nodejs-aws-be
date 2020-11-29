@@ -1,11 +1,14 @@
 import * as Joi from "joi";
 
 export interface Product {
+  id?: string;
   title: string;
   description: string;
   price: number;
   count: number;
 }
+
+export type Validation = null | { errors: string[] };
 
 const productSchema = Joi.object({
   title: Joi.string().min(3).max(50).required(),
@@ -14,7 +17,7 @@ const productSchema = Joi.object({
   count: Joi.number().integer().required(),
 });
 
-export const validateProduct = (product: Product): { errors: string[] } | null => {
+export const validateProduct = (product: Product): Validation => {
   const validation = productSchema.validate(product, { abortEarly: false });
   if (validation.error) {
     const errors = validation.error.details.map(({ message }) => message);

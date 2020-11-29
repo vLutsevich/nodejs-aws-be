@@ -4,9 +4,6 @@ import { BUCKET_NAME, REGION, UPLOAD_FOLDER_NAME } from './config';
 const serverlessConfiguration: Serverless = {
   service: {
     name: 'import-service',
-    // app and org for use with dashboard.serverless.com
-    // app: your-app-name,
-    // org: your-org-name,
   },
   frameworkVersion: '2',
   custom: {
@@ -15,7 +12,6 @@ const serverlessConfiguration: Serverless = {
       includeModules: true
     }
   },
-  // Add the serverless-webpack plugin
   plugins: ['serverless-webpack'],
   provider: {
     name: 'aws',
@@ -27,6 +23,8 @@ const serverlessConfiguration: Serverless = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      SQS_URL:
+        "${cf:product-service-${self:provider.stage}.SQSQueueUrl}",
     },
     iamRoleStatements: [
       {
@@ -42,7 +40,12 @@ const serverlessConfiguration: Serverless = {
         Resource: [
           `arn:aws:s3:::${BUCKET_NAME}/*`
         ]
-      }
+      },
+      {
+        Effect: "Allow",
+        Action: "sqs:*",
+        Resource: "${cf:product-service-${self:provider.stage}.SQSQueueArn}",
+      },
     ]
   },
   functions: {
